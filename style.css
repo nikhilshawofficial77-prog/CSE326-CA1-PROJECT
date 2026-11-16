@@ -390,11 +390,6 @@ button, select { cursor: pointer; }
   background: linear-gradient(110deg, #fff, #f7fbf8);
 }
 .report-heading h2 { margin-bottom: 5px; }
-.report-actions {
-  display: flex;
-  align-items: end;
-  gap: 12px;
-}
 .filter-field {
   width: 190px;
   gap: 8px;
