@@ -267,52 +267,6 @@
     });
   }
 
-  function csvValue(value) {
-    const text = value == null ? "" : String(value);
-    const safeText = /^[\t\r ]*[=+\-@]/.test(text) ? "'" + text : text;
-    return '"' + safeText.replace(/"/g, '""') + '"';
-  }
-
-  function downloadFeedbackCsv() {
-    let feedback;
-    try {
-      feedback = readFeedback();
-    } catch (error) {
-      showMessage("dashboard-message", error.message);
-      return;
-    }
-
-    const data = [
-      ["Visit date", "Submitted at", "Patient", "Patient email", "Service", "Rating", "Comments", "Response", "Status"],
-      ...feedback.map(function (entry) {
-        return [
-          entry.visitDate,
-          entry.submittedAt,
-          isAnonymous(entry) ? "Anonymous" : (entry.patientName || entry.patientEmail || "Patient"),
-          isAnonymous(entry) ? "" : entry.patientEmail,
-          entry.category,
-          entry.rating,
-          entry.comments,
-          isAnonymous(entry) ? "" : entry.response,
-          entry.status || "Pending"
-        ];
-      })
-    ];
-    const csv = "\uFEFF" + data.map(function (row) {
-      return row.map(csvValue).join(",");
-    }).join("\r\n");
-    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "hospital-feedback-" + today() + ".csv";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setTimeout(function () {
-      URL.revokeObjectURL(url);
-    }, 0);
-  }
-
   // Dashboard page: load feedback and reload when the service filter changes
   const categoryFilter = document.getElementById("category-filter");
   if (categoryFilter) {
@@ -328,6 +282,5 @@
     });
     showDashboard();
     categoryFilter.addEventListener("change", showDashboard);
-    document.getElementById("export-feedback").addEventListener("click", downloadFeedbackCsv);
   }
 })();
